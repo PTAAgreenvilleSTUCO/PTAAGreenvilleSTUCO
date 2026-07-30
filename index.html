@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stuco PTAA Greenville — Portal</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* =====================
+     CHANGE YOUR COLORS HERE
+     ===================== */
+  --red: #1741A3;        /* main brand color */
+  --red-light: #FFFDD1;  /* light background tint */
+  --red-dark: #00447A;   /* dark text on light backgrounds */
+  --red-mid: #126EB8;    /* button hover color */
+
+  --ink: #1a1a1a;
+  --muted: #6b7280;
+  --surface: #ffffff;
+  --bg: #f9f9f8;
+  --border: rgba(0,0,0,0.1);
+  --border2: rgba(0,0,0,0.2);
+}
+body{font-family:'DM Sans',sans-serif;background:#f3f2ee;min-height:100vh}
+.screen{display:none}
+.screen.active{display:block}
+.topbar{background:var(--red);padding:0 1.25rem;display:flex;align-items:stretch;gap:0}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;letter-spacing:1px;padding:.9rem 0;line-height:1;flex:1}
+.logo span{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.65);font-weight:400;margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-user{font-size:13px;color:rgba(255,255,255,0.8);font-weight:500}
+.topbar-role{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:.5px}
+.btn-logout{background:rgba(255,255,255,0.15);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:500}
+.btn-logout:hover{background:rgba(255,255,255,0.25)}
+.nav-bar{background:var(--surface);border-bottom:0.5px solid var(--border);display:flex;padding:0 1.25rem;gap:0}
+.nav-item{font-size:13px;font-weight:500;color:var(--muted);padding:11px 14px;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;transition:all .15s}
+.nav-item.active{color:var(--red);border-bottom-color:var(--red)}
+.nav-item:hover:not(.active){color:var(--ink)}
+.content{padding:1.25rem;max-width:860px;margin:0 auto}
+.page-section{display:none}
+.page-section.active{display:block}
+.hero{background:var(--red-light);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
+.hero-icon{width:44px;height:44px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hero-icon i{font-size:20px;color:#fff}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red-dark);letter-spacing:.5px}
+.hero-sub{font-size:12px;color:var(--red);margin-top:1px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.stat-card{background:var(--bg);border-radius:10px;padding:.875rem;text-align:center}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.3px}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:7px}
+.card-title i{font-size:17px;color:var(--red)}
+label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px;margin-top:10px;letter-spacing:.3px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;border:0.5px solid var(--border);border-radius:8px;padding:8px 11px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--red)}
+textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:var(--red-mid)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-approve{background:#1D9E75;color:#fff;border:none}
+.btn-approve:hover{background:#0F6E56}
+.btn-deny{background:transparent;color:#A32D2D;border:0.5px solid #F09595}
+.btn-deny:hover{background:#FCEBEB}
+.btn-delete{background:transparent;color:#A32D2D;border:0.5px solid #F09595}
+.btn-delete:hover{background:#FCEBEB}
+.req-list{display:flex;flex-direction:column;gap:8px}
+.req-item{background:var(--bg);border-radius:10px;padding:.875rem 1rem;display:flex;align-items:center;gap:10px}
+.req-avatar{width:36px;height:36px;border-radius:8px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0}
+.req-info{flex:1;min-width:0}
+.req-name{font-size:13px;font-weight:500;color:var(--ink)}
+.req-event{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req-meta{display:flex;gap:6px;margin-top:3px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-hours{background:#E6F1FB;color:#0C447C}
+.badge-date{background:#fff;border:0.5px solid var(--border);color:var(--muted)}
+.badge-pending{background:#FAEEDA;color:#633806}
+.badge-approved{background:#EAF3DE;color:#27500A}
+.badge-denied{background:#FCEBEB;color:#791F1F}
+.req-actions{display:flex;gap:5px;flex-shrink:0}
+.event-list{display:flex;flex-direction:column;gap:8px}
+.event-item{background:var(--bg);border-radius:10px;padding:.875rem 1rem;display:flex;gap:12px;align-items:flex-start}
+.event-date-box{background:var(--red);border-radius:8px;padding:6px 10px;text-align:center;flex-shrink:0;min-width:48px}
+.event-date-box .month{font-size:10px;color:rgba(255,255,255,0.75);letter-spacing:1px;text-transform:uppercase;font-weight:500}
+.event-date-box .day{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#fff;line-height:1}
+.event-info{flex:1;min-width:0}
+.event-title{font-size:13px;font-weight:500;color:var(--ink)}
+.event-loc{font-size:12px;color:var(--muted);margin-top:1px;display:flex;align-items:center;gap:4px}
+.event-desc{font-size:12px;color:var(--muted);margin-top:4px;font-style:italic}
+.badge-event-type{background:var(--red-light);color:var(--red-dark);font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block;margin-top:4px}
+.filter-row{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-btn{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s}
+.filter-btn.active{background:var(--red);color:#fff;border-color:var(--red)}
+.empty{text-align:center;padding:2rem;color:var(--muted)}
+.empty i{font-size:32px;display:block;margin-bottom:.5rem;color:var(--border2)}
+.empty p{font-size:13px}
+.success-bar{background:#EAF3DE;border-radius:8px;padding:.75rem 1rem;display:none;align-items:center;gap:8px;margin-bottom:1rem}
+.success-bar.show{display:flex}
+.success-bar i{color:#3B6D11;font-size:18px;flex-shrink:0}
+.success-bar p{font-size:13px;color:#27500A;font-weight:500}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#2C2C2A;color:#fff;padding:8px 18px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;transition:transform .3s;z-index:999;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.login-card{background:var(--surface);border:0.5px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:380px;box-shadow:0 4px 24px rgba(0,0,0,0.07)}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--red);letter-spacing:1px;margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:1.5rem;letter-spacing:.5px}
+.role-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1.25rem}
+.role-btn{padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.role-btn.active{background:var(--red-light);color:var(--red-dark);border-color:var(--red)}
+.login-err{background:#FCEBEB;color:#791F1F;border-radius:8px;padding:8px 12px;font-size:12px;display:none;margin-bottom:.75rem}
+.login-err.show{display:block}
+.hint{font-size:11px;color:var(--muted);margin-top:.5rem;font-style:italic}
+.probation-banner{background:#FFF3CD;border:1px solid #FFCA2C;border-radius:10px;padding:.85rem 1rem;display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
+.probation-banner i{font-size:20px;color:#856404;flex-shrink:0}
+.probation-banner p{font-size:13px;color:#664D03;font-weight:500}
+.probation-banner small{display:block;font-weight:400;font-size:12px;color:#856404;margin-top:1px}
+.member-row{background:var(--bg);border-radius:10px;padding:.8rem 1rem;display:flex;align-items:center;gap:10px}
+.member-row+.member-row{margin-top:8px}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:13px;font-weight:500;color:var(--ink)}
+.member-meta{font-size:12px;color:var(--muted);margin-top:1px}
+.badge-probation{background:#FFF3CD;color:#664D03;border:0.5px solid #FFCA2C}
+.btn-probation{background:transparent;color:#856404;border:0.5px solid #FFCA2C;font-size:12px;padding:5px 10px;border-radius:8px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;transition:all .15s}
+.btn-probation:hover{background:#FFF3CD}
+.btn-probation.on{background:#FFCA2C;color:#664D03;border-color:#e0ab00}
+.btn-probation.on:hover{background:#e0ab00}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">Stuco PTAA</div>
+      <div class="login-sub">Pioneer Tech Greenville &mdash; STUDENT COUNCIL</div>
+      <div class="role-toggle">
+        <button class="role-btn active" id="role-member" onclick="setRole('member')"><i class="ti ti-user"></i> Member</button>
+        <button class="role-btn" id="role-sponsor" onclick="setRole('sponsor')"><i class="ti ti-shield-check"></i> Sponsor</button>
+      </div>
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="Enter your username" onkeydown="if(event.key==='Enter')doLogin()">
+      <label style="margin-top:10px">Password</label>
+      <input type="password" id="login-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="login-err" id="login-err">Incorrect username or password.</div>
+      <button class="btn btn-primary" style="width:100%;margin-top:1rem;justify-content:center" onclick="doLogin()"><i class="ti ti-login"></i> Sign in</button>
+      <p class="hint">Use your assigned username &amp; password &mdash; Sponsor: dguzman / admin1234</p>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER SCREEN -->
+<div id="screen-member" class="screen">
+  <div class="topbar">
+    <div class="logo" style="display:flex;align-items:center;gap:10px">
+  <img src="https://texas.ptaa.org/greenville/wp-content/blogs.dir/3/files/2024/03/PTAA_LOGO-removebg.png" style="height:40px;width:40px;object-fit:contain;border-radius:6px">
+  PTAA Greenville<span>STUCO</span>
+</div>
+    <div class="topbar-right">
+      <div style="text-align:right">
+        <div class="topbar-user" id="m-username-display"></div>
+        <div class="topbar-role">Member</div>
+      </div>
+      <button class="btn-logout" onclick="logout()"><i class="ti ti-logout"></i> Sign out</button>
+    </div>
+  </div>
+  <div class="nav-bar">
+    <button class="nav-item active" onclick="mNav('dashboard',this)"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="nav-item" onclick="mNav('submit',this)"><i class="ti ti-plus"></i> Submit Hours</button>
+    <button class="nav-item" onclick="mNav('events',this)"><i class="ti ti-calendar"></i> Events</button>
+  </div>
+  <div class="content">
+    <div id="probation-banner" class="probation-banner" style="display:none">
+      <i class="ti ti-alert-triangle"></i>
+      <p>You are currently on probation<small>Contact your sponsor for more information.</small></p>
+    </div>
+    <div id="ms-dashboard" class="page-section active">
+      <div class="hero"><div class="hero-icon"><i class="ti ti-layout-dashboard"></i></div><div><div class="hero-title">My Dashboard</div><div class="hero-sub">Track your service hours progress</div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="m-stat-submitted">0</div><div class="stat-lbl">Requests sent</div></div>
+        <div class="stat-card"><div class="stat-num" id="m-stat-approved">0</div><div class="stat-lbl">Hours approved</div></div>
+        <div class="stat-card"><div class="stat-num" id="m-stat-pending">0</div><div class="stat-lbl">Pending</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-clock-history"></i> My requests</div>
+        <div id="m-req-list" class="req-list"></div>
+      </div>
+    </div>
+    <div id="ms-submit" class="page-section">
+      <div class="hero"><div class="hero-icon"><i class="ti ti-clock-check"></i></div><div><div class="hero-title">Submit Service Hours</div><div class="hero-sub">Fill out the form and wait for sponsor approval</div></div></div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-forms"></i> New request</div>
+        <div id="submit-ok" class="success-bar"><i class="ti ti-circle-check"></i><p>Request submitted! Your sponsor will review it soon.</p></div>
+        <label>Event / activity name</label>
+        <input type="text" id="m-event" placeholder="e.g. Food Bank Volunteer">
+        <div class="form-row">
+          <div><label>Date of service</label><input type="date" id="m-date"></div>
+          <div><label>Hours completed</label><input type="number" id="m-hours" min="0.5" max="24" step="0.5" placeholder="e.g. 3"></div>
+        </div>
+        <div style="margin-top:1rem;display:flex;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="submitRequest()"><i class="ti ti-send"></i> Submit</button>
+        </div>
+      </div>
+    </div>
+    <div id="ms-events" class="page-section">
+      <div class="hero"><div class="hero-icon"><i class="ti ti-calendar-event"></i></div><div><div class="hero-title">Upcoming Events</div><div class="hero-sub">Events posted by your student council sponsors</div></div></div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-calendar"></i> Event board</div>
+        <div id="m-event-list" class="event-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPONSOR SCREEN -->
+<div id="screen-sponsor" class="screen">
+  <div class="topbar">
+    <div class="logo" style="display:flex;align-items:center;gap:10px">
+  <img src="https://texas.ptaa.org/greenville/wp-content/blogs.dir/3/files/2024/03/PTAA_LOGO-removebg.png" style="height:40px;width:40px;object-fit:contain;border-radius:6px">
+  PTAA Greenville<span>STUCO</span>
+<div class="topbar-right">
+  
+  <div class="user-box">
+    <div class="topbar-user" id="sp-username-display"></div>
+    <div class="topbar-role">Sponsor</div>
+  </div>
+
+</div>  <button class="btn-logout" onclick="logout()">
+    <i class="ti ti-logout"></i> Sign out
+  </button>
+</div>
+  </div>
+  <div class="nav-bar">
+    <button class="nav-item active" onclick="spNav('requests',this)"><i class="ti ti-list-check"></i> Hour Requests</button>
+    <button class="nav-item" onclick="spNav('events',this)"><i class="ti ti-calendar-plus"></i> Manage Events</button>
+    <button class="nav-item" onclick="spNav('members',this)"><i class="ti ti-users"></i> Members</button>
+  </div>
+  <div class="content">
+    <div id="sp-requests" class="page-section active">
+      <div class="hero"><div class="hero-icon"><i class="ti ti-shield-check"></i></div><div><div class="hero-title">Hour Requests</div><div class="hero-sub">Review and approve member service hour submissions</div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="sp-stat-pending">0</div><div class="stat-lbl">Awaiting review</div></div>
+        <div class="stat-card"><div class="stat-num" id="sp-stat-approved">0</div><div class="stat-lbl">Approved</div></div>
+        <div class="stat-card"><div class="stat-num" id="sp-stat-hours">0</div><div class="stat-lbl">Total hrs approved</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-users"></i> All member requests</div>
+        <div class="filter-row">
+          <button class="filter-btn active" onclick="setSPFilter('all',this)">All</button>
+          <button class="filter-btn" onclick="setSPFilter('pending',this)">Pending</button>
+          <button class="filter-btn" onclick="setSPFilter('approved',this)">Approved</button>
+          <button class="filter-btn" onclick="setSPFilter('denied',this)">Denied</button>
+        </div>
+        <div id="sp-req-list" class="req-list"></div>
+      </div>
+    </div>
+    <div id="sp-events" class="page-section">
+      <div class="hero"><div class="hero-icon"><i class="ti ti-calendar-plus"></i></div><div><div class="hero-title">Manage Events</div><div class="hero-sub">Post upcoming events visible to all members</div></div></div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-plus"></i> Add new event</div>
+        <div id="event-ok" class="success-bar"><i class="ti ti-circle-check"></i><p>Event posted! Members can now see it.</p></div>
+        <label>Event name</label>
+        <input type="text" id="sp-ev-name" placeholder="e.g. Community Clean-Up Day">
+        <div class="form-row">
+          <div><label>Date</label><input type="date" id="sp-ev-date"></div>
+          <div><label>Type</label>
+            <select id="sp-ev-type">
+              <option value="Service">Service</option>
+              <option value="Meeting">Meeting</option>
+              <option value="Fundraiser">Fundraiser</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <label>Location</label>
+        <input type="text" id="sp-ev-loc" placeholder="e.g. Greenville Community Center">
+        <label>Description (optional)</label>
+        <textarea id="sp-ev-desc" placeholder="Brief description of the event..."></textarea>
+        <div style="margin-top:1rem;display:flex;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="addEvent()"><i class="ti ti-calendar-plus"></i> Post event</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-calendar"></i> Posted events</div>
+        <div id="sp-event-list" class="event-list"></div>
+      </div>
+    </div>
+    <div id="sp-members" class="page-section">
+      <div class="hero"><div class="hero-icon"><i class="ti ti-users"></i></div><div><div class="hero-title">Member Roster</div><div class="hero-sub">View all members, their approved hours, and manage probation status</div></div></div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-users"></i> All members</div>
+        <div id="sp-member-list" class="req-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const submitSound = new Audio('freesound_community-decidemp3-14575.mp3');
+const eventSound = new Audio('freesound_community-decidemp3-14575.mp3');
+
+/* =============================================
+   ACCOUNTS — add or change usernames/passwords here
+   ============================================= */
+const ACCOUNTS = {
+  member: [
+    {user:'member',              pass:'pass123',           display:'Member Demo'},
+    {user:'kynagandhi',          pass:'password11880',     display:'Kyna Gandhi'},
+    {user:'cheyennemontgomery',  pass:'bluestone482',      display:'Cheyenne Montgomery'},
+    {user:'ashlyndeman',         pass:'greenmist714',      display:'Ashlyn Deman'},
+    {user:'izzyrowlee',          pass:'pinkspark293',      display:'Izzy Rowlee'},
+    {user:'saimahmumshed',       pass:'redcloud857',       display:'Saimah Mumshad'},
+    {user:'taylynnfoster',       pass:'yellowleaf631',     display:'Taylinn Foster'},
+    {user:'micahconrad',         pass:'tealwave529',       display:'Micah Conrad'},
+    {user:'vinnieperez',         pass:'orangedust416',     display:'Vinnie Perez'},
+    {user:'isaiahmoreno',        pass:'indigorain748',     display:'Isaiah Moreno'},
+    {user:'maseonperry',         pass:'coppersun362',      display:'Maseon Perry'},
+    {user:'aidenfoster',         pass:'limefrost197',      display:'Aiden Foster'},
+    {user:'reagancarpenter',     pass:'navybrook583',      display:'Reagan Carpenter'},
+    {user:'alexstewart',         pass:'scarletmoon274',    display:'Alex Stewart'},
+    {user:'oreofeobasayna',      pass:'goldriver415',      display:'Oreofe Obasayna'},
+    {user:'keylichicas',          pass:'rosepetal863',      display:'Keyli Chicas'},
+    {user:'lilliankoester',      pass:'mintglow541',       display:'Lillian Koester'},
+    {user:'shivalidpatel',       pass:'violethill329',     display:'Shivali Patel'},
+    {user:'seanutrera',          pass:'slatewind782',      display:'Sean Utrera'},
+    {user:'barronsidwell',       pass:'amberdawn456',      display:'Barron Sidwell'},
+    {user:'rauldelao',           pass:'cobaltfield318',    display:'Raul De La O'},
+    {user:'jaceykemp',           pass:'fuchsiapond647',    display:'Jacey Kemp'},
+    {user:'joseykemp',           pass:'ivorysnow293',      display:'Josey Kemp'},
+    {user:'allisonosornio',      pass:'plumridge571',      display:'Allison Osornio'},
+    {user:'brianacaballero',     pass:'celadonflame839',   display:'Brianna Caballero'},
+    {user:'willarce',            pass:'ruststream164',     display:'Will Arce'},
+    {user:'joshuapalma',         pass:'goldnleaf427',      display:'Joshua Palma'},
+    {user:'gunnarsnell',         pass:'steelbrook952',     display:'Gunnar Snell'},
+    {user:'sameehamumshad',      pass:'crimsondew736',     display:'Sameeha Mumshad'},
+    {user:'graciedrayer',        pass:'pinkwhirl485',      display:'Gracie Drayer'},
+    {user:'josiahhuddleston',    pass:'azurerock613',      display:'Josiah Huddleston'},
+    {user:'kaylahthope',         pass:'lilacpath258',      display:'Kaylah Thope'},
+    {user:'bryanespinoza',       pass:'tangerinepath391',  display:'Bryan Espinoza'},
+    {user:'aidenhorne',          pass:'emeraldmist847',    display:'Aiden Horne'},
+    {user:'makyalaramirez',      pass:'coralblaze519',     display:'Makyala Ramirez'}
+  ],
+  sponsor: [
+    {user:'dguzman',  pass:'admin1234',       display:'Dawn Guzman'},
+    {user:'mrsjones', pass:'jones123',         display:'Mrs. Jones'},
+    {user:'smumshad', pass:'saimahPTAAstuco',  display:'President Saimah'},
+    {user:'imoreno',  pass:'isaiahPTAAstuco',  display:'Vice-President Isaiah'}
+  ]
+};
+
+let currentUser = null;
+let currentRole = null;
+let loginRole = 'member';
+let spFilter = 'all';
+let requests = [];
+let events = [];
+let probationSet = new Set(); // stores usernames on probation
+
+function setRole(r){
+  loginRole = r;
+  document.getElementById('role-member').classList.toggle('active', r==='member');
+  document.getElementById('role-sponsor').classList.toggle('active', r==='sponsor');
+}
+
+function doLogin(){
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-err');
+  const found = (ACCOUNTS[loginRole]||[]).find(a=>a.user===u && a.pass===p);
+  if(!found){ err.classList.add('show'); return; }
+  err.classList.remove('show');
+  currentUser = found; currentRole = loginRole;
+  showScreen(loginRole==='member'?'screen-member':'screen-sponsor');
+  if(loginRole==='member'){
+    document.getElementById('m-username-display').textContent = found.display;
+    const onProbation = probationSet.has(found.user);
+    document.getElementById('probation-banner').style.display = onProbation ? 'flex' : 'none';
+    renderMemberDash(); renderMemberEvents();
+  } else {
+    document.getElementById('sp-username-display').textContent = found.display;
+    renderSponsorRequests(); renderSponsorEvents();
+  }
+}
+
+function logout(){
+  currentUser=null; currentRole=null;
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  showScreen('screen-login');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function mNav(sec,btn){
+  document.querySelectorAll('#screen-member .nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#screen-member .page-section').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ms-'+sec).classList.add('active');
+  if(sec==='dashboard') renderMemberDash();
+  if(sec==='events') renderMemberEvents();
+}
+
+function spNav(sec,btn){
+  document.querySelectorAll('#screen-sponsor .nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#screen-sponsor .page-section').forEach(p=>p.classList.remove('active'));
+  document.getElementById('sp-'+sec).classList.add('active');
+  if(sec==='members') renderMemberRoster();
+}
+
+function fmtDate(d){ if(!d) return ''; const[y,m,day]=d.split('-'); return `${m}/${day}/${y}`; }
+function getMonth(d){ if(!d) return ''; return ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][parseInt(d.split('-')[1])-1]; }
+function getDay(d){ return d?parseInt(d.split('-')[2]):''; }
+function initials(n){ return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'??'; }
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function save(){
+  localStorage.setItem('ptaa-requests', JSON.stringify(requests));
+  localStorage.setItem('ptaa-events', JSON.stringify(events));
+  localStorage.setItem('ptaa-probation', JSON.stringify([...probationSet]));
+}
+function loadData(){
+  try{ const r=localStorage.getItem('ptaa-requests'); if(r) requests=JSON.parse(r); }catch(e){ requests=[]; }
+  try{ const e=localStorage.getItem('ptaa-events'); if(e) events=JSON.parse(e); }catch(e){ events=[]; }
+  try{ const p=localStorage.getItem('ptaa-probation'); if(p) probationSet=new Set(JSON.parse(p)); }catch(e){ probationSet=new Set(); }
+}
+
+function submitRequest(){
+  const event=document.getElementById('m-event').value.trim();
+  const date=document.getElementById('m-date').value;
+  const hours=document.getElementById('m-hours').value;
+  if(!event||!date||!hours){ showToast('Please fill out all fields.'); return; }
+  requests.unshift({id:Date.now(),name:currentUser.display,username:currentUser.user,event,date,hours:parseFloat(hours),status:'pending'});
+  save();
+  document.getElementById('m-event').value='';
+  document.getElementById('m-date').value='';
+  document.getElementById('m-hours').value='';
+  const ok=document.getElementById('submit-ok');
+  submitSound.currentTime = 0;
+  submitSound.play().catch(()=>{});
+  ok.classList.add('show'); setTimeout(()=>ok.classList.remove('show'),4000);
+  renderMemberDash();
+}
+
+function renderMemberDash(){
+  const mine=requests.filter(r=>r.username===currentUser.user);
+  const approved=mine.filter(r=>r.status==='approved');
+  const pending=mine.filter(r=>r.status==='pending');
+  document.getElementById('m-stat-submitted').textContent=mine.length;
+  document.getElementById('m-stat-approved').textContent=approved.reduce((s,r)=>s+r.hours,0);
+  document.getElementById('m-stat-pending').textContent=pending.length;
+  const list=document.getElementById('m-req-list');
+  if(!mine.length){ list.innerHTML='<div class="empty"><i class="ti ti-inbox"></i><p>No requests yet — go to Submit Hours to get started.</p></div>'; return; }
+  list.innerHTML=mine.map(r=>`
+    <div class="req-item">
+      <div class="req-avatar">${initials(r.name)}</div>
+      <div class="req-info">
+        <div class="req-name">${r.event}</div>
+        <div class="req-meta">
+          <span class="badge badge-hours"><i class="ti ti-clock" style="font-size:10px"></i> ${r.hours} hr${r.hours!==1?'s':''}</span>
+          <span class="badge badge-date">${fmtDate(r.date)}</span>
+          <span class="badge badge-${r.status}">${r.status}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderMemberEvents(){
+  const list=document.getElementById('m-event-list');
+  const today=new Date().toISOString().slice(0,10);
+  const upcoming=events.filter(e=>e.date>=today).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!upcoming.length){ list.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>No upcoming events posted yet. Check back soon!</p></div>'; return; }
+  list.innerHTML=upcoming.map(e=>`
+    <div class="event-item">
+      <div class="event-date-box"><div class="month">${getMonth(e.date)}</div><div class="day">${getDay(e.date)}</div></div>
+      <div class="event-info">
+        <div class="event-title">${e.name}</div>
+        ${e.location?`<div class="event-loc"><i class="ti ti-map-pin" style="font-size:12px"></i>${e.location}</div>`:''}
+        ${e.desc?`<div class="event-desc">${e.desc}</div>`:''}
+        <span class="badge-event-type">${e.type}</span>
+      </div>
+    </div>`).join('');
+}
+
+function setSPFilter(f,btn){
+  spFilter=f;
+  document.querySelectorAll('#sp-requests .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSponsorRequests();
+}
+
+function renderSponsorRequests(){
+  const filtered=spFilter==='all'?requests:requests.filter(r=>r.status===spFilter);
+  const approved=requests.filter(r=>r.status==='approved');
+  const pending=requests.filter(r=>r.status==='pending');
+  document.getElementById('sp-stat-pending').textContent=pending.length;
+  document.getElementById('sp-stat-approved').textContent=approved.length;
+  document.getElementById('sp-stat-hours').textContent=approved.reduce((s,r)=>s+r.hours,0);
+  const list=document.getElementById('sp-req-list');
+  if(!filtered.length){ list.innerHTML='<div class="empty"><i class="ti ti-check"></i><p>No requests in this category.</p></div>'; return; }
+  list.innerHTML=filtered.map(r=>`
+    <div class="req-item">
+      <div class="req-avatar">${initials(r.name)}</div>
+      <div class="req-info">
+        <div class="req-name">${r.name} <span style="font-weight:400;color:var(--muted);font-size:12px">&mdash; ${r.event}</span></div>
+        <div class="req-meta">
+          <span class="badge badge-hours"><i class="ti ti-clock" style="font-size:10px"></i> ${r.hours} hr${r.hours!==1?'s':''}</span>
+          <span class="badge badge-date">${fmtDate(r.date)}</span>
+          <span class="badge badge-${r.status}">${r.status}</span>
+        </div>
+      </div>
+      <div class="req-actions">
+        ${r.status==='pending'?`
+          <button class="btn btn-sm btn-approve" onclick="reviewReq(${r.id},'approved')"><i class="ti ti-check"></i></button>
+          <button class="btn btn-sm btn-deny" onclick="reviewReq(${r.id},'denied')"><i class="ti ti-x"></i></button>
+        `:`<span class="badge badge-${r.status}" style="padding:5px 9px">${r.status}</span>`}
+      </div>
+    </div>`).join('');
+}
+
+function reviewReq(id,status){
+  const r=requests.find(x=>x.id===id);
+  if(!r) return;
+  r.status=status; save(); renderSponsorRequests();
+  showToast(status==='approved'?`Approved ${r.hours} hrs for ${r.name}`:`Request denied for ${r.name}`);
+}
+
+function addEvent(){
+  const name=document.getElementById('sp-ev-name').value.trim();
+  const date=document.getElementById('sp-ev-date').value;
+  const type=document.getElementById('sp-ev-type').value;
+  const location=document.getElementById('sp-ev-loc').value.trim();
+  const desc=document.getElementById('sp-ev-desc').value.trim();
+  if(!name||!date){ showToast('Event name and date are required.'); return; }
+  events.unshift({id:Date.now(),name,date,type,location,desc,postedBy:currentUser.display});
+  save();
+  document.getElementById('sp-ev-name').value='';
+  document.getElementById('sp-ev-date').value='';
+  document.getElementById('sp-ev-loc').value='';
+  document.getElementById('sp-ev-desc').value='';
+  const ok=document.getElementById('event-ok');
+  eventSound.currentTime = 0;
+  eventSound.play().catch(()=>{});
+  ok.classList.add('show'); setTimeout(()=>ok.classList.remove('show'),4000);
+  renderSponsorEvents();
+}
+
+function deleteEvent(id){
+  events=events.filter(e=>e.id!==id);
+  save(); renderSponsorEvents();
+  showToast('Event removed.');
+}
+
+function renderSponsorEvents(){
+  const list=document.getElementById('sp-event-list');
+  if(!events.length){ list.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>No events posted yet.</p></div>'; return; }
+  const sorted=[...events].sort((a,b)=>a.date.localeCompare(b.date));
+  list.innerHTML=sorted.map(e=>`
+    <div class="event-item">
+      <div class="event-date-box"><div class="month">${getMonth(e.date)}</div><div class="day">${getDay(e.date)}</div></div>
+      <div class="event-info">
+        <div class="event-title">${e.name}</div>
+        ${e.location?`<div class="event-loc"><i class="ti ti-map-pin" style="font-size:12px"></i>${e.location}</div>`:''}
+        ${e.desc?`<div class="event-desc">${e.desc}</div>`:''}
+        <span class="badge-event-type">${e.type}</span>
+      </div>
+      <div style="flex-shrink:0">
+        <button class="btn btn-sm btn-delete" onclick="deleteEvent(${e.id})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+function renderMemberRoster(){
+  const list = document.getElementById('sp-member-list');
+  const members = ACCOUNTS.member;
+  if(!members.length){ list.innerHTML='<div class="empty"><i class="ti ti-users"></i><p>No members found.</p></div>'; return; }
+  list.innerHTML = members.map(m => {
+    const approved = requests.filter(r=>r.username===m.user && r.status==='approved');
+    const totalHours = approved.reduce((s,r)=>s+r.hours,0);
+    const onProbation = probationSet.has(m.user);
+    return `
+    <div class="member-row" id="member-row-${m.user}">
+      <div class="req-avatar">${initials(m.display)}</div>
+      <div class="member-info">
+        <div class="member-name">${m.display} ${onProbation?'<span class="badge badge-probation"><i class="ti ti-alert-triangle" style="font-size:10px"></i> On probation</span>':''}</div>
+        <div class="member-meta"><i class="ti ti-clock" style="font-size:11px"></i> ${totalHours} approved hr${totalHours!==1?'s':''} &nbsp;&bull;&nbsp; @${m.user}</div>
+      </div>
+      <div style="flex-shrink:0">
+        <button class="btn-probation ${onProbation?'on':''}" onclick="toggleProbation('${m.user}')">
+          <i class="ti ti-${onProbation?'shield-off':'shield-exclamation'}"></i> ${onProbation?'Remove Probation':'Put on Probation'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleProbation(username){
+  if(probationSet.has(username)){
+    probationSet.delete(username);
+    showToast(`Probation removed for ${username}`);
+  } else {
+    probationSet.add(username);
+    showToast(`${username} has been placed on probation`);
+  }
+  save();
+  renderMemberRoster();
+}
+
+loadData();
+</script>
+</body>
+</html>
